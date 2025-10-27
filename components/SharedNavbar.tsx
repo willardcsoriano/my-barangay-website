@@ -18,7 +18,7 @@ export function SharedNavbar({ userRole }: SharedNavbarProps) {
     ? "bg-red-700 text-white shadow-xl" // Admin: High-contrast, serious tone
     : "bg-white text-gray-900 border-b"; // Resident: Clean, standard tone
 
-  const homeLink = isAdmin ? '/admin' : '/account';
+  const homeLink = isAdmin ? '/admin/dashboard' : '/account';
 
   return (
     <header className={`sticky top-0 z-40 w-full ${headerClasses}`}>
