@@ -1,98 +1,55 @@
 // app/admin/dashboard/page.tsx
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'; 
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+// ... (The rest of the imports and security checks from the old file's layout)
 
-// Import the required type and action (ClearanceStatus is now correctly exported)
-import { type ClearanceStatus } from '@/lib/admin/actions'; 
+export default async function AdminDashboardOverview() {
+    // ... Security check (similar to the layout file, ensuring role is 'admin') ...
+    // NOTE: For simplicity, the security logic should be in app/admin/layout.tsx
 
-// Import the new Client Component wrapper for the update buttons
-import { StatusUpdateForm } from '@/components/admin/StatusUpdateForm'; 
-
-// Define a type for the requests fetched from the DB
-type Request = {
-    id: number;
-    clearance_type: string;
-    status: ClearanceStatus;
-    resident_id: string;
-    created_at: string;
-    profiles: { first_name: string; last_name: string; contact_number: string } | null;
-};
-
-// --- Main Server Component ---
-export default async function AdminDashboard() {
-    // 1. Initialize the standard client to perform session and role checks
     const supabase = await createClient();
-
-    // 2. Get User and Check Role (First layer of security)
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-        // Redirect if not logged in (secondary check, middleware should handle primary)
-        return redirect('/login');
-    }
-
-    // 3. Fetch the user's role
-    const { data: profile } = await supabase
-        .from('profiles')
-        .select('user_role')
-        .eq('id', user.id)
-        .single();
-
-    // 4. If user is not an Admin, redirect them out (Second layer of security)
-    if (profile?.user_role !== 'admin') {
-        return redirect('/account');
-    }
     
-    // 5. Fetch ALL Clearance Requests (Admin Privileged Read)
-    // NOTE: This relies on an RLS policy that allows the 'authenticated' role (if Admin) to SELECT all.
-    const { data: requests, error } = await supabase
+    // 1. Fetch the COUNT of Pending Requests
+    const { count, error } = await supabase
         .from('clearance_requests')
-        .select(`
-            id, 
-            clearance_type, 
-            status, 
-            created_at,
-            profiles (first_name, last_name, contact_number)
-        `)
-        .order('created_at', { ascending: true }) as { data: Request[] | null, error: any };
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'Pending');
 
-    if (error) {
-        console.error('Admin Fetch Error:', error.message);
-        return <div>Error loading requests. Ensure the RLS policy for Admins allows SELECT ALL on `clearance_requests`.</div>;
-    }
-    
-    // 6. Render Dashboard
+    // 2. Render Overview Metrics
     return (
         <div className="p-8 max-w-7xl mx-auto">
-            <h1 className="text-3xl font-bold mb-8">Admin Processing Dashboard</h1>
-            <p className="mb-4 text-sm text-red-600 font-semibold">
-                This page is secured. Only users with the 'admin' role can view it.
-            </p>
-
-            <div className="space-y-4">
-                {requests?.length === 0 ? (
-                    <p>No clearance requests pending.</p>
-                ) : (
-                    requests?.map((request) => (
-                        <div key={request.id} className="p-4 border rounded-lg shadow-sm flex justify-between items-center">
-                            <div>
-                                <p className="font-semibold">{request.clearance_type} - Request #{request.id}</p>
-                                <p className="text-sm text-gray-600">
-                                    Resident: {request.profiles?.first_name} {request.profiles?.last_name} ({request.profiles?.contact_number})
-                                </p>
-                                <p className="text-sm font-medium">Status: <span className={`px-2 py-1 rounded-full text-xs ${request.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>{request.status}</span></p>
-                            </div>
-                            
-                            {/* NEW COMPONENT: Status Update Form (Client-Side Action Handler) */}
-                            {/* This component wraps the Server Action to handle the return value and UI transition */}
-                            <StatusUpdateForm 
-                                requestId={request.id} 
-                                currentStatus={request.status} 
-                            />
+            <h1 className="text-3xl font-bold mb-8">Admin Dashboard Overview</h1>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                {/* Metric 1: Pending Queue Count (CRITICAL) */}
+                <Card className="shadow-lg border-l-4 border-red-500">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">
+                            Urgent: Pending Requests
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-4xl font-bold text-red-600">
+                            {count || 0}
                         </div>
-                    ))
-                )}
+                        <p className="text-xs text-gray-500 mt-2">
+                            <Link href="/admin/requests" className="underline text-blue-600">
+                                View Full Queue →
+                            </Link>
+                        </p>
+                    </CardContent>
+                </Card>
+                
+                {/* Metric 2: Placeholder for Announcements */}
+                 <Card>
+                    <CardHeader><CardTitle className="text-sm font-medium">Published Announcements</CardTitle></CardHeader>
+                    <CardContent><div className="text-4xl font-bold">3</div></CardContent>
+                 </Card>
+
             </div>
         </div>
     );
