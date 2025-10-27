@@ -23,7 +23,7 @@ export function HeroSection() {
         
         {/* Link to the Login Page */}
         <Button variant="outline" size="lg" asChild>
-          <Link href="/login">
+          <Link href="/auth/login">
             Resident Login / Status
           </Link>
         </Button>
