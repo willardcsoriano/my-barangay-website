@@ -29,3 +29,13 @@ export async function login(formData: FormData) {
   // The middleware will ensure the session cookie is refreshed here.
   redirect('/account');
 }
+
+export async function logout() {
+  const supabase = await createClient();
+  
+  // This securely deletes the session on the server and invalidates the cookies
+  await supabase.auth.signOut();
+  
+  // Redirect back to the public homepage or login page
+  redirect('/');
+}
