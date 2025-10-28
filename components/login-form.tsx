@@ -1,112 +1,91 @@
-// components\login-form.tsx
+// components/auth/LoginForm.tsx
+'use client';
 
-"use client";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import Link from "next/link"; // <<< ADDED LINK IMPORT
+import { useState } from 'react';
 
-import { cn } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+// NOTE: Uses the secure Server Action
+import { login } from '@/lib/auth/actions'; 
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+export function LoginForm() { // Removed props/className since the wrapper page handles styling
+  const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const supabase = createClient();
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) throw error;
-      // Update this route to redirect to an authenticated route. The user already has an active session.
-      router.push("/account");
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
+  const handleSubmit = async (formData: FormData) => {
+    setError(null);
+    
+    // ADDED: Simple client-side password validation (optional, but good practice)
+    if (!formData.get('password')) {
+         setError("Please enter a password.");
+         return;
     }
-  };
 
-  return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin}>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="grid gap-2">
+    const result = await login(formData);
+    
+    if (result?.error) {
+      setError(result.error);
+    }
+    // If successful, the server action handles the redirect to /account
+  };
+
+  return (
+    // FIX: Wrapped content in a div for better structure, mirroring the scaffold UX
+    <div className="grid gap-4"> 
+        <form action={handleSubmit} className="grid gap-4">
+      
+            {/* Email Input */}
+            <div className="grid gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input 
+                  id="email" 
+                  name="email" 
+                  type="email" 
+                  placeholder="juan.dela.cruz@example.com" 
+                  required 
+                />
+            </div>
+      
+            {/* Password Input with Forgot Link */}
+            <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="/auth/forgot-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
+                    <Label htmlFor="password">Password</Label>
+                    <Link
+                        href="/auth/forgot-password"
+                        className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                    >
+                        Forgot your password?
+                    </Link>
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login"}
-              </Button>
-            </div>
+                <Input 
+                  id="password" 
+                  name="password" 
+                  type="password" 
+                  required 
+                />
+            </div>
+      
+            {/* Error Display */}
+            {error && (
+                <p className="text-sm font-medium text-red-500 bg-red-50 p-2 rounded">
+                    {error}
+                </p>
+            )}
+
+            {/* Submit Button */}
+            <Button type="submit" className="w-full mt-2">
+                Log In
+            </Button>
+
+            {/* Sign Up Link */}
             <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/auth/sign-up"
-                className="underline underline-offset-4"
-              >
-                Sign up
-              </Link>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+                Don&apos;t have an account?{" "}
+                <Link href="/auth/sign-up" className="underline underline-offset-4">
+                    Sign up
+                </Link>
+            </div>
+        </form>
     </div>
-  );
+  );
 }
