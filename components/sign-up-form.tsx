@@ -1,3 +1,4 @@
+// components/sign-up-form.tsx
 "use client";
 
 import { cn } from "@/lib/utils";
@@ -44,7 +45,7 @@ export function SignUpForm({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/protected`,
+          emailRedirectTo: `${window.location.origin}/account`,
         },
       });
       if (error) throw error;
