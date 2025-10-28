@@ -4,6 +4,75 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { revalidatePath } from 'next/cache';
 
+/**
+ * Privileged action to create a new announcement or update an existing one.
+ */
+export async function saveAnnouncement(formData: FormData, authorId: string, announcementId?: number) {
+  const supabaseAdmin = createAdminClient();
+
+  const title = formData.get('title') as string;
+  const content = formData.get('content') as string;
+  const is_published = formData.get('is_published') === 'on'; // Checkbox value
+
+  if (!title || !content) {
+    return { error: 'Title and Content are required.' };
+  }
+  
+  const announcementData = {
+    title,
+    content,
+    is_published,
+    author_id: authorId,
+  };
+
+  let error;
+  if (announcementId) {
+    // UPDATE existing announcement
+    ({ error } = await supabaseAdmin
+      .from('announcements')
+      .update(announcementData)
+      .eq('id', announcementId));
+  } else {
+    // INSERT new announcement
+    ({ error } = await supabaseAdmin
+      .from('announcements')
+      .insert(announcementData));
+  }
+
+  if (error) {
+    console.error('SAVE ANNOUNCEMENT ERROR:', error.message);
+    return { error: `Failed to save announcement: ${error.message}` };
+  }
+
+  // Revalidate the public homepage cache to show the new/updated announcement instantly
+  revalidatePath('/'); 
+  revalidatePath('/admin/announcements');
+
+  const action = announcementId ? 'updated' : 'created';
+  return { success: true, message: `Announcement successfully ${action}.` };
+}
+
+/**
+ * Privileged action to delete an announcement.
+ */
+export async function deleteAnnouncement(announcementId: number) {
+  const supabaseAdmin = createAdminClient();
+
+  const { error } = await supabaseAdmin
+    .from('announcements')
+    .delete()
+    .eq('id', announcementId);
+
+  if (error) {
+    console.error('DELETE ANNOUNCEMENT ERROR:', error.message);
+    return { error: 'Failed to delete announcement.' };
+  }
+
+  revalidatePath('/');
+  revalidatePath('/admin/announcements');
+  return { success: true, message: `Announcement ID ${announcementId} successfully deleted.` };
+}
+
 // Define the available status types to ensure data integrity
 export type ClearanceStatus = 'Pending' | 'Processing' | 'Ready for Pickup' | 'Completed' | 'Denied';
 
