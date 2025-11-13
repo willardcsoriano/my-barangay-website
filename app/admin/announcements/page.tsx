@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { deleteAnnouncement, saveAnnouncement } from '@/lib/admin/actions';
-import { redirect } from 'next/navigation'; // <<< FIX 1: ADD MISSING REDIRECT IMPORT
+import { redirect } from 'next/navigation'; // 
+import { PublishToggle } from '@/components/admin/PublishToggle';
 
 // Import the new client component
 import { DeleteButton } from '@/components/admin/DeleteButton'; 
@@ -95,6 +96,15 @@ export default async function AdminAnnouncementsPage() {
                             <div className="flex space-x-2">
                                 {/* FIX 2: Use the dedicated Client Component for Delete */}
                                 <DeleteButton id={announcement.id} />
+
+                                <PublishToggle 
+                                    id={announcement.id} 
+                                    currentStatus={announcement.is_published}
+                                    title={announcement.title}
+                                    content={announcement.content}
+                                    authorId={announcement.author_id}
+                                />
+
                                 {/* You can add an Edit button placeholder here */}
                                 <Button variant="secondary" size="sm">Edit</Button>
                             </div>
@@ -105,3 +115,4 @@ export default async function AdminAnnouncementsPage() {
         </div>
     );
 }
+

@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { HeroSection } from '@/components/HeroSection';
 import { AnnouncementsFeed } from '@/components/AnnouncementsFeed';
 import { DirectorySection } from '@/components/DirectorySection';
+import { PublicPageLayout } from '@/components/PublicPageLayout'; // 
 
 // Define the type again here for the data fetching
 type Announcement = {
@@ -23,20 +24,12 @@ export default async function HomePage() {
     .order('created_at', { ascending: false })
     .limit(3) as { data: Announcement[] | null, error: any };
 
-  // 2. Compose the final page using the structured components
+// 2. Compose the final page using the new layout wrapper
   return (
-    <main>
-      {/* Navigation Bar would typically go here */}
-      
+    <PublicPageLayout>
       <HeroSection />
-      
       <AnnouncementsFeed announcements={announcements || []} />
-      
       <DirectorySection />
-      
-      <footer className="py-6 text-center text-sm text-gray-500 border-t">
-        © {new Date().getFullYear()} Barangay [Your Barangay Name]. All Rights Reserved.
-      </footer>
-    </main>
+    </PublicPageLayout>
   );
 }
