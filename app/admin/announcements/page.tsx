@@ -95,7 +95,10 @@ export default async function AdminAnnouncementsPage() {
                             
                             <div className="flex space-x-2">
                                 {/* FIX 2: Use the dedicated Client Component for Delete */}
-                                <DeleteButton id={announcement.id} />
+                                <DeleteButton 
+                                    id={announcement.id} 
+                                    action={deleteAnnouncement} // <-- ADD THIS PROP
+                                />
 
                                 <PublishToggle 
                                     id={announcement.id} 
