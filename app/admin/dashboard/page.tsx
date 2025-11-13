@@ -4,14 +4,12 @@ import { redirect } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'; 
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-// Assuming the necessary imports for layout checks are handled in the layout.tsx file
-// We still need redirect for the security check logic if the layout fails.
+// ... (rest of imports)
 
 export default async function AdminDashboardOverview() {
     const supabase = await createClient();
 
-    // NOTE: Security checks for user and role must run, usually done via the layout.
-    // For a standalone page, these checks are crucial:
+    // Security checks... (omitted for brevity, assume they are handled)
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return redirect('/auth/login');
     const { data: profile } = await supabase.from('profiles').select('user_role').eq('id', user.id).single();
@@ -27,12 +25,16 @@ export default async function AdminDashboardOverview() {
     const { count: publishedCount, error: publishedError } = await supabase
         .from('announcements')
         .select('*', { count: 'exact', head: true })
-        .eq('is_published', true); // Only count posts visible to the public
+        .eq('is_published', true);
 
+    // 3. Fetch the COUNT of Current Officials
+    const { count: officialsCount, error: officialsError } = await supabase
+        .from('officials')
+        .select('*', { count: 'exact', head: true });
+    
     // Handle initial fetch errors (optional, but good practice)
-    if (pendingError || publishedError) {
-        console.error('Dashboard Fetch Error:', pendingError?.message || publishedError?.message);
-        // Display a general error message
+    if (pendingError || publishedError || officialsError) {
+        console.error('Dashboard Fetch Error:', pendingError?.message || publishedError?.message || officialsError?.message);
         return <div className="p-8 text-red-700">Error loading metrics.</div>;
     }
 
@@ -62,13 +64,12 @@ export default async function AdminDashboardOverview() {
                     </CardContent>
                 </Card>
                 
-                {/* Metric 2: Published Announcements (FIXED) */}
+                {/* Metric 2: Published Announcements */}
                  <Card>
                     <CardHeader>
                         <CardTitle className="text-sm font-medium">Published Announcements</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        {/* Use the dynamically fetched count */}
                         <div className="text-4xl font-bold">
                             {publishedCount || 0} 
                         </div>
@@ -80,7 +81,23 @@ export default async function AdminDashboardOverview() {
                     </CardContent>
                  </Card>
 
-                 {/* You can add more metrics here */}
+                 {/* Metric 3: Officials Directory (NEW) */}
+                 <Card>
+                    <CardHeader>
+                        <CardTitle className="text-sm font-medium">Officials Directory</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-4xl font-bold">
+                            {officialsCount || 0} 
+                        </div>
+                        <p className="text-xs text-gray-500 mt-2">
+                            {/* Link to the Officials Management Page */}
+                            <Link href="/admin/officials" className="underline text-blue-600">
+                                Manage Officials →
+                            </Link>
+                        </p>
+                    </CardContent>
+                 </Card>
 
             </div>
         </div>
