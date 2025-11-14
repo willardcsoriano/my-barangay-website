@@ -1,14 +1,16 @@
 // app/admin/announcements/page.tsx
+
 import { createClient } from '@/lib/supabase/server';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { deleteAnnouncement, saveAnnouncement } from '@/lib/admin/actions';
-import { redirect } from 'next/navigation'; // 
+import { redirect } from 'next/navigation'; 
 import { PublishToggle } from '@/components/admin/PublishToggle';
 
-// Import the new client component
+// Components required by the Admin page
 import { DeleteButton } from '@/components/admin/DeleteButton'; 
+// NOTE: MarkdownRenderer is NOT imported or used here, as the admin list only shows a snippet.
 
 // Define the Announcement type
 type Announcement = {
@@ -21,13 +23,12 @@ type Announcement = {
 };
 
 // --- Form Component (Server Component Wrapper for Save/Update) ---
-// (No changes here, as it's a valid Server Action wrapper)
+// This is used for creating/editing announcements.
 async function AnnouncementForm({ user, announcement }: { user: any, announcement?: Announcement }) {
-  async function actionWrapper(formData: FormData) {
-      'use server'; 
-      // The saveAnnouncement Server Action is called here
-      const result = await saveAnnouncement(formData, user.id, announcement?.id);
-      console.log(result.message);
+    async function actionWrapper(formData: FormData) {
+        'use server'; 
+        const result = await saveAnnouncement(formData, user.id, announcement?.id);
+        console.log(result.message);
     }
     
     return (
@@ -36,7 +37,7 @@ async function AnnouncementForm({ user, announcement }: { user: any, announcemen
             
             <form action={actionWrapper} className="grid gap-4 mt-4">
                 <input type="text" name="title" defaultValue={announcement?.title} placeholder="Title" required className="border p-2 rounded" />
-                <textarea name="content" defaultValue={announcement?.content} placeholder="Content" rows={5} required className="border p-2 rounded" />
+                <textarea name="content" defaultValue={announcement?.content} placeholder="Content (Markdown syntax supported: **bold**, *italics*, # Heading)" rows={5} required className="border p-2 rounded" />
                 
                 <div className="flex items-center space-x-2">
                     <Checkbox id={`publish-${announcement?.id || 'new'}`} name="is_published" defaultChecked={announcement?.is_published || false} />
@@ -53,12 +54,11 @@ async function AnnouncementForm({ user, announcement }: { user: any, announcemen
     );
 }
 
-
-// --- Main Server Component (Page) ---
+// --- Main Server Component (Admin Page) ---
 export default async function AdminAnnouncementsPage() {
     const supabase = await createClient();
     
-    // Security check (inherited from layout.tsx, but added here for safety)
+    // Security check
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return redirect('/auth/login');
 
@@ -91,13 +91,13 @@ export default async function AdminAnnouncementsPage() {
                             </span>
                         </CardHeader>
                         <CardContent>
+                            {/* Display the raw text snippet */}
                             <p className="text-sm text-gray-600 mb-4">{announcement.content.substring(0, 100)}...</p>
                             
                             <div className="flex space-x-2">
-                                {/* FIX 2: Use the dedicated Client Component for Delete */}
                                 <DeleteButton 
                                     id={announcement.id} 
-                                    action={deleteAnnouncement} // <-- ADD THIS PROP
+                                    action={deleteAnnouncement} 
                                 />
 
                                 <PublishToggle 
@@ -108,7 +108,6 @@ export default async function AdminAnnouncementsPage() {
                                     authorId={announcement.author_id}
                                 />
 
-                                {/* You can add an Edit button placeholder here */}
                                 <Button variant="secondary" size="sm">Edit</Button>
                             </div>
                         </CardContent>
@@ -118,4 +117,3 @@ export default async function AdminAnnouncementsPage() {
         </div>
     );
 }
-

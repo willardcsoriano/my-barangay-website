@@ -1,58 +1,46 @@
-// app/announcements/page.tsx
-import { createClient } from '@/lib/supabase/server';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import Link from 'next/link';
+// app/announcements/page.tsx (Public Announcements List)
 
-// Define the Announcement type structure
+import { createClient } from '@/lib/supabase/server';
+import { PublicPageLayout } from '@/components/PublicPageLayout'; 
+// FIX: Import the new, separate Client Component that handles rendering the list
+import { FullAnnouncementsListClient } from '@/components/FullAnnouncementsListClient'; 
+
+// Define the type for the data fetching
 type Announcement = {
-  id: number;
-  title: string;
-  content: string;
-  created_at: string;
+  id: number;
+  title: string;
+  content: string; // Contains the raw Markdown
+  created_at: string;
 };
 
-export default async function AnnouncementsPage() {
-  const supabase = await createClient();
-  
-  // 1. Fetch ALL published announcements.
-  // This query relies on the RLS policy that limits public access to rows where is_published = true.
-  const { data: announcements, error } = await supabase
-    .from('announcements')
-    .select('id, title, content, created_at')
-    .eq('is_published', true) // Essential RLS condition for public pages
-    .order('created_at', { ascending: false }) as { data: Announcement[] | null, error: any };
+// --- Main Server Component (Public List Page) ---
+export default async function AnnouncementsListPage() {
+    const supabase = await createClient();
 
-  if (error) {
-    console.error('Public Announcement Fetch Error:', error.message);
-    return <div>Failed to load announcements. Please check public RLS policy.</div>;
-  }
+    // Fetch ALL published announcements
+    const { data: announcements, error } = await supabase
+        .from('announcements')
+        .select('id, title, content, created_at')
+        .eq('is_published', true)
+        .order('created_at', { ascending: false }) as { data: Announcement[] | null, error: any };
 
-  return (
-    <div className="p-8 max-w-5xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8 text-blue-700 border-b pb-2">
-        Barangay Official News & Updates
-      </h1>
+    if (error) {
+        console.error('Public List Fetch Error:', error.message);
+    }
+    
+    return (
+        <PublicPageLayout>
+            <div className="p-8 max-w-4xl mx-auto mt-12">
+                {/* Public Header/Title */}
+                <header className="mb-8 border-b pb-4">
+                    <h1 className="text-4xl font-extrabold text-gray-900">
+                        Official Announcements Archive
+                    </h1>
+                </header>
 
-      {(announcements || []).length === 0 ? (
-        <p className="text-gray-600">There are no official announcements published at this time.</p>
-      ) : (
-        <div className="space-y-6">
-          {(announcements || []).map((announcement) => (
-            <Card key={announcement.id} className="shadow-md">
-              <CardHeader>
-                <CardTitle className="text-xl">{announcement.title}</CardTitle>
-                <p className="text-sm text-gray-500">
-                  Published: {new Date(announcement.created_at).toLocaleDateString()}
-                </p>
-              </CardHeader>
-              <CardContent>
-                {/* Note: In a real app, you would parse the full content here. */}
-                <p className="text-gray-700">{announcement.content}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+                {/* FIX: Render the imported Client Component */}
+                <FullAnnouncementsListClient announcements={announcements || []} />
+            </div>
+        </PublicPageLayout>
+    );
 }
