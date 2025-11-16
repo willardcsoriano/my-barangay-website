@@ -42,9 +42,13 @@ export function AnnouncementManagerClient({ announcements }: { announcements: An
                     </CardHeader>
 
                     <CardContent>
-                        <p className="text-sm text-gray-600 mb-4">
-                            {a.content.substring(0, 100)}...
-                        </p>
+                        <div
+                            className="text-sm text-gray-600 mb-4 line-clamp-3"
+                            dangerouslySetInnerHTML={{
+                                __html: a.content.substring(0, 150) + '...',
+                            }}
+                        />
+
 
                         <div className="flex space-x-2">
                             <Button

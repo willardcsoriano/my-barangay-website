@@ -6,7 +6,7 @@ export function HeroSection() {
   return (
     <section className="text-center py-16 bg-blue-50/50">
       <h1 className="text-5xl font-extrabold text-gray-900 mb-4">
-        Welcome to Barangay [Your Barangay Name]
+        Welcome to Barangay Marikina Heights
       </h1>
       <p className="text-xl text-gray-600 mb-8">
         Your reliable source for public services, announcements, and community updates.
