@@ -1,4 +1,5 @@
 // app/admin/dashboard/page.tsx
+
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'; 
@@ -45,13 +46,14 @@ export default async function AdminDashboardOverview() {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
-                {/* Metric 1: Pending Queue Count (CRITICAL) */}
-                <Card className="shadow-lg border-l-4 border-red-500">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                {/* Metric 1: Pending Queue Count (CRITICAL) - SYNCHRONIZED LAYOUT */}
+                <Card>
+                    <CardHeader>
                         <CardTitle className="text-sm font-medium">
                             Urgent: Pending Requests
                         </CardTitle>
                     </CardHeader>
+                    
                     <CardContent>
                         <div className="text-4xl font-bold text-red-600">
                             {pendingCount || 0}

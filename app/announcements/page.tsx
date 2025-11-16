@@ -1,8 +1,9 @@
 // app/announcements/page.tsx (Public Announcements List)
 
+// app/announcements/page.tsx (Public Announcements List)
+
 import { createClient } from '@/lib/supabase/server';
 import { PublicPageLayout } from '@/components/PublicPageLayout'; 
-// FIX: Import the new, separate Client Component that handles rendering the list
 import { FullAnnouncementsListClient } from '@/components/FullAnnouncementsListClient'; 
 
 // Define the type for the data fetching
@@ -29,18 +30,21 @@ export default async function AnnouncementsListPage() {
     }
     
     return (
-        <PublicPageLayout>
-            <div className="p-8 max-w-4xl mx-auto mt-12">
-                {/* Public Header/Title */}
-                <header className="mb-8 border-b pb-4">
-                    <h1 className="text-4xl font-extrabold text-gray-900">
-                        Official Announcements Archive
-                    </h1>
-                </header>
+    <PublicPageLayout>
+        <div className="p-8 max-w-4xl mx-auto mt-12">
+            
+            {/* Public Header/Title */}
+            {/* 🎯 FIX: Apply text-center to the <header> container */}
+            <header className="mb-8 border-b pb-4 text-center">
+                
+                {/* 🎯 FIX: Remove redundant text-center from <h1> */}
+                <h1 className="text-4xl font-extrabold text-gray-900">
+                    Official Announcements Archive
+                </h1>
+            </header>
 
-                {/* FIX: Render the imported Client Component */}
-                <FullAnnouncementsListClient announcements={announcements || []} />
-            </div>
-        </PublicPageLayout>
-    );
+            <FullAnnouncementsListClient announcements={announcements || []} />
+        </div>
+    </PublicPageLayout>
+);
 }
