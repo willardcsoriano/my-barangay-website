@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DeleteButton } from '@/components/admin/DeleteButton';
 import { PublishToggle } from '@/components/admin/PublishToggle';
+import { deleteAnnouncement } from '@/lib/admin/actions';
+
 
 type Announcement = {
     id: number;
@@ -59,7 +61,11 @@ export function AnnouncementManagerClient({ announcements }: { announcements: An
                                 Edit
                             </Button>
 
-                            <DeleteButton id={a.id} />
+                            <DeleteButton 
+                                id={a.id} 
+                                action={deleteAnnouncement}
+                            />
+
 
                             <PublishToggle
                                 id={a.id}

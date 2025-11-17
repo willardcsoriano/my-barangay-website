@@ -5,14 +5,15 @@
 import { Button } from '@/components/ui/button';
 import { useTransition, useState } from 'react';
 import { Trash2 } from 'lucide-react';
-import { deleteAnnouncement } from '@/lib/admin/actions'; // ⬅️ DIRECT import of your server action
 import { useRouter } from 'next/navigation';
 
-interface DeleteButtonProps {
+export interface DeleteButtonProps {
     id: number;
+    action: (id: number) => Promise<{ error?: string; success?: boolean; message?: string }>;
+    onActionComplete?: () => void;
 }
 
-export function DeleteButton({ id }: DeleteButtonProps) {
+export function DeleteButton({ id, action, onActionComplete }: DeleteButtonProps) {
     const [isPending, startTransition] = useTransition();
     const [statusMessage, setStatusMessage] = useState<string | null>(null);
     const router = useRouter();
@@ -25,13 +26,16 @@ export function DeleteButton({ id }: DeleteButtonProps) {
         setStatusMessage(null);
 
         startTransition(async () => {
-            const result = await deleteAnnouncement(id);
+            const result = await action(id);
 
             if (result.error) {
                 setStatusMessage(`❌ Delete failed: ${result.message || result.error}`);
             } else {
                 setStatusMessage('✅ Deleted successfully!');
-                // Refresh server data
+
+                // If parent component wants to refresh something
+                if (onActionComplete) onActionComplete();
+
                 router.refresh();
             }
         });
