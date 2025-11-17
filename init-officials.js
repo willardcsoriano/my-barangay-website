@@ -28,33 +28,174 @@ function getOrderFromPosition(title) {
     return position ? position.order : 99;
 }
 
-// --- Data to Insert (REPLACE WITH ACTUAL MARIKINA HEIGHTS DATA) ---
+// --- COMPLETE BARANGAY OFFICIALS LIST (PLACEHOLDER DATA) ---
 const MARIKINA_HEIGHTS_OFFICIALS_DATA = [
-    { 
-        position: 'Barangay Captain', 
-        name: 'Hon. Placeholder Juan Dela Cruz', // ⬅️ REPLACE NAME
-        contact_number: '0917-000-1111', 
-        email: 'captain@marikinaheights.ph' 
-    },
-    { 
-        position: 'Barangay Secretary', 
-        name: 'Jane Doe', // ⬅️ REPLACE NAME
-        contact_number: null, 
-        email: 'secretary@marikinaheights.ph' 
-    },
-    { 
-        position: 'Barangay Treasurer', 
-        name: 'Mark Smith', // ⬅️ REPLACE NAME
-        contact_number: '0998-555-4444', 
-        email: null 
-    },
-    { 
-        position: 'Barangay Councilor (Puno)', 
-        name: 'Councilor Uno', // ⬅️ REPLACE NAME
-        contact_number: null, 
-        email: null 
-    },
-    // ... add all 7 councilors, SK Chair, etc. here ...
+  // Main Officials
+  {
+    position: "Barangay Captain",
+    name: "Hon. Juan Dela Cruz",
+    contact_number: "0917-000-1111",
+    email: "captain@marikinaheights.ph"
+  },
+  {
+    position: "Barangay Secretary",
+    name: "Maria Isabella Santos",
+    contact_number: "0917-200-3344",
+    email: "secretary@marikinaheights.ph"
+  },
+  {
+    position: "Barangay Treasurer",
+    name: "Roberto Villanueva",
+    contact_number: "0998-555-4444",
+    email: "treasurer@marikinaheights.ph"
+  },
+
+  // Barangay Councilors (7 Kagawads)
+  {
+    position: "Barangay Kagawad",
+    committee: "Peace and Order",
+    name: "Kagawad Antonio Reyes",
+    contact_number: null,
+    email: null
+  },
+  {
+    position: "Barangay Kagawad",
+    committee: "Health and Sanitation",
+    name: "Kagawad Liza Fernandez",
+    contact_number: null,
+    email: null
+  },
+  {
+    position: "Barangay Kagawad",
+    committee: "Education",
+    name: "Kagawad Miguel Bautista",
+    contact_number: null,
+    email: null
+  },
+  {
+    position: "Barangay Kagawad",
+    committee: "Infrastructure",
+    name: "Kagawad Jerome Pascual",
+    contact_number: null,
+    email: null
+  },
+  {
+    position: "Barangay Kagawad",
+    committee: "Environmental Protection",
+    name: "Kagawad Andrea Castillo",
+    contact_number: null,
+    email: null
+  },
+  {
+    position: "Barangay Kagawad",
+    committee: "Livelihood Programs",
+    name: "Kagawad Steven Ramos",
+    contact_number: null,
+    email: null
+  },
+  {
+    position: "Barangay Kagawad",
+    committee: "Sports and Youth Development",
+    name: "Kagawad Bianca Cruz",
+    contact_number: null,
+    email: null
+  },
+
+  // SK Officials
+  {
+    position: "SK Chairperson",
+    name: "SK Chair Gabriel Mendoza",
+    contact_number: "0917-999-8899",
+    email: "skchair@marikinaheights.ph"
+  },
+  {
+    position: "SK Kagawad",
+    name: "SK Kagawad Alyssa Santos",
+    contact_number: null,
+    email: null
+  },
+  {
+    position: "SK Kagawad",
+    name: "SK Kagawad Carlo Rivera",
+    contact_number: null,
+    email: null
+  },
+  {
+    position: "SK Kagawad",
+    name: "SK Kagawad Denise Angeles",
+    contact_number: null,
+    email: null
+  },
+  {
+    position: "SK Kagawad",
+    name: "SK Kagawad Nathan Villena",
+    contact_number: null,
+    email: null
+  },
+  {
+    position: "SK Secretary",
+    name: "SK Sec. Felicity Gomez",
+    contact_number: null,
+    email: null
+  },
+  {
+    position: "SK Treasurer",
+    name: "SK Treasurer Paolo Gutierrez",
+    contact_number: null,
+    email: null
+  },
+
+  // Public Safety Staff
+  {
+    position: "Chief Tanod",
+    name: "Chief Tanod Armando Salcedo",
+    contact_number: "0918-778-2233",
+    email: null
+  },
+
+  // Multiple barangay tanods
+  ...[
+    "Tanod Pedro Morales",
+    "Tanod Ronnie Evangelista",
+    "Tanod Carlos Dominguez",
+    "Tanod Victor Hernandez",
+    "Tanod Manuel Diaz",
+  ].map(name => ({
+    position: "Barangay Tanod",
+    name,
+    contact_number: null,
+    email: null
+  })),
+
+  // Health workers
+  {
+    position: "Barangay Health Worker (BHW)",
+    name: "BHW Aileen Dizon",
+    contact_number: null,
+    email: null
+  },
+  {
+    position: "Barangay Health Worker (BHW)",
+    name: "BHW Rosalinda Javier",
+    contact_number: null,
+    email: null
+  },
+
+  // Nutrition Scholar
+  {
+    position: "Barangay Nutrition Scholar (BNS)",
+    name: "BNS Clarisse Montoya",
+    contact_number: null,
+    email: null
+  },
+
+  // Administrative staff
+  {
+    position: "Barangay Clerk",
+    name: "Clerk Samantha De Vera",
+    contact_number: null,
+    email: null
+  }
 ];
 
 // --- Main Execution Function ---

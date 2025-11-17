@@ -14,7 +14,7 @@ import { PublicHeaderClient } from './PublicHeaderClient';
 function PublicFooter() {
   return (
     <footer className="w-full border-t p-4 text-center text-sm text-gray-500 bg-gray-50 mt-12">
-      © {new Date().getFullYear()} Barangay [Your Barangay Name]. All Rights Reserved.
+      © {new Date().getFullYear()} Barangay Marikina Heights. All Rights Reserved.
     </footer>
   );
 }
