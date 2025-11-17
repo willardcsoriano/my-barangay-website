@@ -1,109 +1,208 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# Barangay Marikina Heights Information System  
+**Modern, mobile-responsive community portal built with Next.js 16 and Supabase**
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+**Live Site:** https://wcsoriano-barangay-website.vercel.app/  
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+This project serves as the official digital portal for **Barangay Marikina Heights**, providing residents with easy access to announcements, services, and barangay directory information. The system also includes an **admin dashboard** for barangay staff to manage announcements, officials, and resident service requests.
 
-## Features
+---
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Middleware
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Password-based authentication block installed via the [Supabase UI Library](https://supabase.com/ui/docs/nextjs/password-based-auth)
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+## 📌 Features
 
-## Demo
+### 👥 **Resident Features**
+- Browse latest barangay announcements  
+- View full announcement details  
+- Check barangay officials directory  
+- Request barangay services (clearance, permits, etc.)  
+- Track status of submitted requests  
+- Secure resident login & account creation  
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+### 🛠️ **Admin Features**
+- Admin login with role-based access control  
+- Manage announcements (create, update, delete, publish/unpublish)  
+- Manage barangay officials (CRUD + ordering + committees)  
+- Manage resident service requests (approve, deny, update status)  
+- Centralized dashboard for quick access to modules  
 
-## Deploy to Vercel
+---
 
-Vercel deployment will guide you through creating a Supabase account and project.
+## 🧰 Tech Stack
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+| Category | Technology Used |
+|---------|-----------------|
+| Framework | **Next.js 16 (App Router, Server Actions, Turbopack)** |
+| Backend | **Supabase** (PostgreSQL + RLS + Auth) |
+| Authentication | Supabase Auth |
+| UI Components | Tailwind CSS + shadcn/ui |
+| Rich Text Editor | Tiptap |
+| Deployment | Vercel |
+| Programming Language | TypeScript |
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+---
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+## 🏗️ System Architecture Overview
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+The system uses:
 
-## Clone and run locally
+- **Next.js Server Components** for data-fetching pages  
+- **Next.js Client Components** for interactive admin tools  
+- **Supabase** as the backend for:
+  - Database (PostgreSQL)
+  - Storage
+  - Authentication
+  - Row-Level Security (RLS)
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+The architecture ensures a clean separation between **public pages**, **resident-only pages**, and **admin-authenticated workflows**.
 
-2. Create a Next.js app using the Supabase Starter template npx command
+---
 
-   ```bash
-   npx create-next-app --example with-supabase with-supabase-app
-   ```
+## 🗃️ Database ERD Summary
 
-   ```bash
-   yarn create next-app --example with-supabase with-supabase-app
-   ```
+The system uses Supabase PostgreSQL.  
+Main tables include:
 
-   ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
-   ```
+### **announcements**
+Stores announcement content published by barangay officials.
 
-3. Use `cd` to change into the app's directory
+### **users**
+Supabase-managed authentication table.
 
-   ```bash
-   cd with-supabase-app
-   ```
+### **officials**
+Stores barangay officials, SK officers, and public safety personnel.
 
-4. Rename `.env.example` to `.env.local` and update the following:
+### **requests**
+Stores resident service requests (clearance, permit, etc.)
 
-  ```env
-  NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=[INSERT SUPABASE PROJECT API PUBLISHABLE OR ANON KEY]
-  ```
-  > [!NOTE]
-  > This example uses `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, which refers to Supabase's new **publishable** key format.
-  > Both legacy **anon** keys and new **publishable** keys can be used with this variable name during the transition period. Supabase's dashboard may show `NEXT_PUBLIC_SUPABASE_ANON_KEY`; its value can be used in this example.
-  > See the [full announcement](https://github.com/orgs/supabase/discussions/29260) for more information.
+### **audit_logs**
+Tracks admin actions for security & transparency.
 
-  Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` can be found in [your Supabase project's API settings](https://supabase.com/dashboard/project/_?showConnect=true)
+**Relations:**  
+- Each announcement references an admin `author_id`.  
+- Each service request references a resident `user_id`.  
+- Officials have an `ordering` field for sorting.
 
-5. You can now run the Next.js local development server:
+---
 
-   ```bash
-   npm run dev
-   ```
+## 🗺️ Resident Sitemap (User Perspective)
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+```
 
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
+Home
+├── Announcements
+│     └── Announcement Details
+├── Officials Directory
+├── Login
+│     └── Sign Up
+└── (After Login)
+├── Services
+│     ├── Request Clearance/Permit
+│     └── My Request Status
+└── Logout → Returns to Home
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+```
 
-## Feedback and issues
+---
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+## 📂 Project Structure
 
-## More Supabase examples
+```
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+my-barangay-website/
+│   app/
+│   components/
+│   lib/
+│   init-officials.js
+│   create_test_users.js
+│   package.json
+│   tailwind.config.ts
+│   tsconfig.json
+│   .env.local
+│   README.md
+
+````
+
+---
+
+## 🚀 Installation
+
+1. Clone the repository:
+```sh
+git clone https://github.com/<your-username>/my-barangay-website.git
+cd my-barangay-website
+````
+
+2. Install dependencies:
+
+```sh
+npm install
+```
+
+3. Create your `.env.local` file:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+SUPABASE_URL=your-url
+```
+
+4. Run the development server:
+
+```sh
+npm run dev
+```
+
+5. Visit:
+   [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 🗄️ Database Initialization Scripts
+
+### **Insert Dummy Officials**
+
+```
+node init-officials.js
+```
+
+### **Generate Test Users**
+
+```
+node create_test_users.js
+```
+
+---
+
+## 🌐 Deployment (Vercel)
+
+This project is fully optimized for deployment on **Vercel**:
+
+* Automatic builds
+* Server components optimized by Turbopack
+* Environment variables configured under Vercel dashboard
+* API routes handled by Server Actions (no backend server needed)
+
+---
+
+## 🔮 Future Enhancements
+
+* Barangay map with geolocation
+* Notification system (email/SMS)
+* Resident profile pages
+* Multi-language support
+* Admin analytics dashboard
+
+---
+
+## 📜 License
+
+This project is licensed for **Barangay Marikina Heights use only**.
+Not intended for commercial redistribution.
+
+---
+
+## 👨‍💻 Author
+
+**Willard Soriano**
+GitHub: [https://github.com/willardcsoriano](https://github.com/willardcsoriano)
+Live Deployment: [https://wcsoriano-barangay-website.vercel.app/](https://wcsoriano-barangay-website.vercel.app/)
