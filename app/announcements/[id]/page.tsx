@@ -10,14 +10,25 @@ type Announcement = {
   created_at: string;
 };
 
-export default async function FullAnnouncementPage({ params }: { params: { id: string } }) {
+// Next.js 16: params is ALWAYS async (a Promise)
+export default async function FullAnnouncementPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+
+  // ✔ Must resolve the Promise
+  const resolved = await params;
+  const id = resolved.id;
+
   const supabase = await createClient();
 
-  if (!params?.id || isNaN(Number(params.id))) {
+  // ✔ Validate after resolving
+  if (!id || isNaN(Number(id))) {
     return redirect('/announcements');
   }
 
-  const announcementId = Number(params.id);
+  const announcementId = Number(id);
 
   const { data: results, error } = await supabase
     .from('announcements')
@@ -33,7 +44,9 @@ export default async function FullAnnouncementPage({ params }: { params: { id: s
       <PublicPageLayout>
         <div className="p-8 max-w-4xl mx-auto mt-12 text-center">
           <h1 className="text-4xl font-bold text-red-600">404</h1>
-          <p className="text-xl text-gray-700">The requested announcement was not found.</p>
+          <p className="text-xl text-gray-700">
+            The requested announcement was not found.
+          </p>
         </div>
       </PublicPageLayout>
     );
