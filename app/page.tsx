@@ -1,17 +1,17 @@
-// app/page.tsx (Final composition)
-// This is a Server Component
+// app/page.tsx (Final composition) 
+// This is a Server Component 
 
 import { createClient } from '@/lib/supabase/server'; 
-import { HeroSection } from '@/components/HeroSection';
-import { AnnouncementsFeed } from '@/components/AnnouncementsFeed';
-import { DirectorySection } from '@/components/DirectorySection';
+import { HeroSection } from '@/components/HeroSection'; 
+import { AnnouncementsFeed } from '@/components/AnnouncementsFeed'; 
+import { DirectorySection } from '@/components/DirectorySection'; 
 import { PublicPageLayout } from '@/components/PublicPageLayout'; 
 
-// Define the type for the data fetching
-type Announcement = {
-  id: number;
-  title: string;
-  content: string; // Content is now expected to contain Markdown
+// Define the type for the data fetching 
+type Announcement = { 
+  id: number; 
+  title: string; 
+  content: string; // Content is now expected to contain Markdown 
   created_at: string;
 };
 

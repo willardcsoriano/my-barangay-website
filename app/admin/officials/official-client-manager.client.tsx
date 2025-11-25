@@ -1,3 +1,5 @@
+// \app\admin\officials\official-client-manager.client.tsx
+
 'use client';
 
 import { useState } from 'react';
