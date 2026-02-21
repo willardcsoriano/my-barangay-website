@@ -1,4 +1,4 @@
-# Barangay Marikina Heights Information System  
+# Barangay Information System  
 **Modern, mobile-responsive community portal built with Next.js 16 and Supabase**
 
 **Live Site:** https://wcsoriano-barangay-website.vercel.app/  
